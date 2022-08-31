@@ -42,4 +42,4 @@ If you want to use it with an other Domain, you still need to dive more into the
 
 Please use this API with that front app: <https://github.com/TchiRubick/amws-front>
 
-## Please contact me on <mailto:tchi.devica@gmail.com> if you have some question
+## Please contact me on <tchi.devica@gmail.com> if you have some question
