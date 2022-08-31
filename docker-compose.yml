@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  test-db:
+    image: mysql:8.0.19
+    container_name: test-db
+    environment:
+      MYSQL_DATABASE: test-database
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_HOST: '%'
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - test-db-volume:/var/lib/mysql
+    networks:
+      - test-network
+
+  test-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        TIMEZONE: "Europe/Paris"
+    container_name: test-api
+    volumes:
+      - ./:/var/www/vhosts/test-api
+    working_dir: /var/www/vhosts/test-api
+    networks:
+      test-network:
+        aliases:
+          - test-api
+
+  api-nginx:
+    image: nginx:latest
+    container_name: api-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - test-api
+    networks:
+      - test-network
+    volumes:
+      - ./nginx/conf/www-test-api:/etc/nginx/conf.d/default.conf
+      - ./:/var/www/vhosts/test-api
+
+networks:
+  test-network:
+volumes:
+  test-db-volume:
